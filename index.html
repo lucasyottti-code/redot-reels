@@ -4,8 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="robots" content="noindex">
-<title>Voz do RedOT</title>
-<meta name="description" content="Escolha a voz de narração dos vídeos do RedOT.">
+<title>Estilo dos vídeos RedOT</title>
+<meta name="description" content="Escolha a voz, a legenda e o título dos vídeos do RedOT.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&display=swap">
@@ -32,7 +32,8 @@ h1{font-size:clamp(34px,7vw,52px);font-weight:900;font-stretch:112%;line-height:
 h1 span{color:var(--gold)}
 .intro{max-width:58ch;color:var(--muted);font-size:16px}
 .steps{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-top:4px}
-.steps span{font-size:13px;font-weight:600;border:1px solid var(--line-2);border-radius:999px;padding:5px 12px;color:var(--ink);background:var(--surface)}
+.steps a{font-size:13px;font-weight:600;border:1px solid var(--line-2);border-radius:999px;padding:5px 12px;color:var(--ink);background:var(--surface);text-decoration:none}
+.steps a:hover{border-color:var(--gold)}
 .steps b{color:var(--gold);margin-right:6px}
 
 section{padding-block:34px 4px}
@@ -75,6 +76,16 @@ section{padding-block:34px 4px}
 .card.fav .selo.s-fav{display:block}
 .card.seg .selo.s-seg{display:block;background:var(--ink)}
 
+.etapa{display:inline-flex;align-items:center;gap:8px;font-size:12px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);margin-bottom:10px}
+.etapa b{display:grid;place-items:center;width:24px;height:24px;border-radius:50%;background:var(--gold);color:#1A1208;font-size:12px;letter-spacing:0}
+.vgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,180px),1fr));gap:14px}
+.tgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,190px),1fr));gap:14px}
+.mcard{display:grid;gap:8px;align-content:start}
+.mcard video,.mcard img{width:100%;aspect-ratio:9/16;object-fit:cover;border-radius:12px;border:2px solid var(--line-2);background:#000;display:block}
+.mcard.sel video,.mcard.sel img{border-color:var(--gold);box-shadow:0 0 0 2px var(--gold)}
+.mcard .btn{width:100%}
+.mcard.sel .btn{background:var(--gold);border-color:var(--gold);color:#1A1208}
+.mcard .desc{font-size:12.5px;color:var(--muted);text-align:center;line-height:1.35}
 .pron{display:grid;gap:10px}
 .opt{display:flex;align-items:center;gap:12px;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:10px 12px;cursor:pointer;text-align:left;font:inherit;color:var(--ink)}
 .opt .play{width:42px;height:42px}
@@ -109,24 +120,39 @@ footer{margin-top:40px;text-align:center;font-size:12px;color:#7d7064}
   <header>
     <img src="img/redot-logo.png" alt="RedOT" width="720" height="447">
     <div class="kicker">Vídeos de features · narração</div>
-    <h1>Escolha a <span>voz</span> do RedOT</h1>
-    <p class="intro">Essa vai ser a voz que narra os vídeos das features do servidor. Todas as opções leem o mesmo texto de exemplo. Ouça, marque a sua favorita e, se quiser, uma segunda opção.</p>
-    <div class="steps"><span><b>1</b>Ouça</span><span><b>2</b>Marque a favorita</span><span><b>3</b>Escolha como falar "RedOT"</span><span><b>4</b>Envie</span></div>
+    <h1>A <span>voz</span> e o <span>estilo</span> dos vídeos</h1>
+    <p class="intro">Aqui você escolhe como os vídeos das features do RedOT vão soar e aparecer: a voz do narrador, o estilo da legenda e o título. Ouça, veja e marque as suas favoritas.</p>
+    <div class="steps"><a href="#sec-voz"><b>1</b>Voz</a><a href="#sec-leg"><b>2</b>Legenda</a><a href="#sec-tit"><b>3</b>Título</a><a href="#sec-pron"><b>4</b>Nome</a><a href="#sec-fim"><b>5</b>Envie</a></div>
   </header>
 
-  <section>
-    <div class="sec-head"><h2>O texto de exemplo</h2><p>É só um exemplo pra comparar as vozes. O sistema de ranking de bosses é inventado.</p></div>
+  <section id="sec-voz">
+    <div class="etapa"><b>1</b>A voz</div>
+    <div class="sec-head"><h2>O texto de exemplo</h2><p>Todas as vozes leem este mesmo texto. É só um exemplo: o ranking de bosses é inventado. Marque a favorita e, se quiser, uma segunda opção.</p></div>
     <div class="texto" id="texto"></div>
   </section>
 
   <div id="grupos"></div>
 
+  <section id="sec-leg">
+    <div class="etapa"><b>2</b>A legenda</div>
+    <div class="sec-head"><h2>Estilo da legenda</h2><p>A legenda aparece junto com a fala, palavra por palavra. Dê play para ver a animação de cada estilo (o som é a narração de teste).</p></div>
+    <div class="vgrid" id="legendas"></div>
+  </section>
+
+  <section id="sec-tit">
+    <div class="etapa"><b>3</b>O título</div>
+    <div class="sec-head"><h2>Estilo do título</h2><p>O título aparece em cima do vídeo com o nome da feature, como um papel rasgado colado na tela. O texto muda em cada vídeo.</p></div>
+    <div class="tgrid" id="titulos"></div>
+  </section>
+
   <section id="sec-pron">
-    <div class="sec-head"><h2>Como falar o nome? <small>Pronúncia</small></h2><p>A mesma voz falando "RedOT" de jeitos diferentes. Escolha o jeito certo e a gente trava a pronúncia em todos os vídeos.</p></div>
+    <div class="etapa"><b>4</b>O nome</div>
+    <div class="sec-head"><h2>Como falar "RedOT"?</h2><p>A mesma voz falando "RedOT" de jeitos diferentes. Escolha o jeito certo e a gente trava a pronúncia em todos os vídeos.</p></div>
     <div class="pron" id="pron" role="radiogroup" aria-label="Pronúncia de RedOT"></div>
   </section>
 
-  <section>
+  <section id="sec-fim">
+    <div class="etapa"><b>5</b>Envie</div>
     <div class="sec-head"><h2>Algum comentário?</h2><p>Opcional. Ex.: "gostei da voz 3, mas um pouco mais rápida".</p></div>
     <div class="final">
       <div style="display:grid;gap:6px"><label for="nome">Seu nome</label><input id="nome" type="text" autocomplete="name" placeholder="Quem está escolhendo"></div>
@@ -134,7 +160,7 @@ footer{margin-top:40px;text-align:center;font-size:12px;color:#7d7064}
     </div>
   </section>
 
-  <footer>Amostras geradas com o Google Cloud Text-to-Speech · a velocidade e a pronúncia de cada palavra podem ser ajustadas depois.</footer>
+  <footer>Vozes do Google Cloud Text-to-Speech · legendas e títulos gerados pelo próprio sistema · velocidade, cores e tamanhos ainda podem ser ajustados.</footer>
 </div>
 
 <div class="dock">
@@ -146,12 +172,12 @@ footer{margin-top:40px;text-align:center;font-size:12px;color:#7d7064}
 </div>
 
 <script>
-const DADOS = {"texto": "Você sabia que, no RedOT, cada boss que você derrota vale muito mais do que o loot? Aqui, todo boss abatido soma pontos no seu ranking. Quanto mais alto o seu rank, maior o bônus de experiência nas suas hunts, chegando a até dez por cento de XP a mais. E não para por aí: com esses pontos você libera áreas exclusivas, com criaturas mais fortes e recompensas que você não encontra no Tibia oficial. Então, se você ainda ignora os bosses, está deixando progresso para trás. E aí, qual foi o último boss que você derrotou?", "grupos": [{"id": "masculinas", "titulo": "Vozes masculinas", "descricao": "Vozes prontas do Google (Chirp 3 HD). Leem exatamente o texto e mantêm o mesmo timbre em todos os vídeos.", "itens": [{"chave": "chirp-Algieba", "rotulo": "Voz 01", "nome": "Algieba", "genero": "Masculina", "tags": ["grave", "suave"], "dur": 35.5}, {"chave": "chirp-Algenib", "rotulo": "Voz 02", "nome": "Algenib", "genero": "Masculina", "tags": ["grave", "levemente rouca"], "dur": 35.1}, {"chave": "chirp-Charon", "rotulo": "Voz 03", "nome": "Charon", "genero": "Masculina", "tags": ["média", "informativa"], "dur": 34.7}, {"chave": "chirp-Sadaltager", "rotulo": "Voz 04", "nome": "Sadaltager", "genero": "Masculina", "tags": ["média", "tom de quem conhece"], "dur": 34.5}, {"chave": "chirp-Alnilam", "rotulo": "Voz 05", "nome": "Alnilam", "genero": "Masculina", "tags": ["média", "firme", "mais rápida"], "dur": 32.9}, {"chave": "chirp-Fenrir", "rotulo": "Voz 06", "nome": "Fenrir", "genero": "Masculina", "tags": ["média", "animada"], "dur": 33.8}]}, {"id": "femininas", "titulo": "Vozes femininas", "descricao": "Mesma família de vozes prontas (Chirp 3 HD).", "itens": [{"chave": "chirp-Pulcherrima", "rotulo": "Voz 07", "nome": "Pulcherrima", "genero": "Feminina", "tags": ["grave", "direta"], "dur": 34.3}, {"chave": "chirp-Gacrux", "rotulo": "Voz 08", "nome": "Gacrux", "genero": "Feminina", "tags": ["média", "madura"], "dur": 35.2}, {"chave": "chirp-Kore", "rotulo": "Voz 09", "nome": "Kore", "genero": "Feminina", "tags": ["média", "firme"], "dur": 33.7}]}, {"id": "dirigidas", "titulo": "Com direção de locutor", "selo": "Gemini", "descricao": "A voz recebe uma descrição do narrador (adulto, jogador antigo de Tibia, confiante, sotaque neutro de TV) e interpreta o texto. Soa mais expressiva, mas pode variar um pouco de um vídeo para outro; o sistema confere cada gravação.", "itens": [{"chave": "gemini-Charon", "rotulo": "Voz 10", "nome": "Charon + direção", "genero": "Masculina", "tags": ["narrador de games", "expressiva"], "dur": 38.3}, {"chave": "gemini-Algenib", "rotulo": "Voz 11", "nome": "Algenib + direção", "genero": "Masculina", "tags": ["grave", "narrador de games"], "dur": 36.1}, {"chave": "gemini-Gacrux", "rotulo": "Voz 12", "nome": "Gacrux + direção", "genero": "Feminina", "tags": ["narradora de games", "madura"], "dur": 41.7}]}], "pronuncia": [{"chave": "pron-a", "rotulo": "Réd-Ót", "explica": "O nome falado como uma palavra de duas sílabas"}, {"chave": "pron-b", "rotulo": "Réd-Ó-Tê", "explica": "Com as letras O e T faladas separadas"}, {"chave": "pron-c", "rotulo": "Redóte", "explica": "Tudo junto, numa palavra só"}]};
+const DADOS = {"texto": "Você sabia que, no RedOT, cada boss que você derrota vale muito mais do que o loot? Aqui, todo boss abatido soma pontos no seu ranking. Quanto mais alto o seu rank, maior o bônus de experiência nas suas hunts, chegando a até dez por cento de XP a mais. E não para por aí: com esses pontos você libera áreas exclusivas, com criaturas mais fortes e recompensas que você não encontra no Tibia oficial. Então, se você ainda ignora os bosses, está deixando progresso para trás. E aí, qual foi o último boss que você derrotou?", "grupos": [{"id": "masculinas", "titulo": "Vozes masculinas", "descricao": "Vozes prontas do Google (Chirp 3 HD). Leem exatamente o texto e mantêm o mesmo timbre em todos os vídeos.", "itens": [{"chave": "chirp-Algieba", "rotulo": "Voz 01", "nome": "Algieba", "genero": "Masculina", "tags": ["grave", "suave"], "dur": 35.5}, {"chave": "chirp-Algenib", "rotulo": "Voz 02", "nome": "Algenib", "genero": "Masculina", "tags": ["grave", "levemente rouca"], "dur": 35.1}, {"chave": "chirp-Charon", "rotulo": "Voz 03", "nome": "Charon", "genero": "Masculina", "tags": ["média", "informativa"], "dur": 34.7}, {"chave": "chirp-Sadaltager", "rotulo": "Voz 04", "nome": "Sadaltager", "genero": "Masculina", "tags": ["média", "tom de quem conhece"], "dur": 34.5}, {"chave": "chirp-Alnilam", "rotulo": "Voz 05", "nome": "Alnilam", "genero": "Masculina", "tags": ["média", "firme", "mais rápida"], "dur": 32.9}, {"chave": "chirp-Fenrir", "rotulo": "Voz 06", "nome": "Fenrir", "genero": "Masculina", "tags": ["média", "animada"], "dur": 33.8}]}, {"id": "femininas", "titulo": "Vozes femininas", "descricao": "Mesma família de vozes prontas (Chirp 3 HD).", "itens": [{"chave": "chirp-Pulcherrima", "rotulo": "Voz 07", "nome": "Pulcherrima", "genero": "Feminina", "tags": ["grave", "direta"], "dur": 34.3}, {"chave": "chirp-Gacrux", "rotulo": "Voz 08", "nome": "Gacrux", "genero": "Feminina", "tags": ["média", "madura"], "dur": 35.2}, {"chave": "chirp-Kore", "rotulo": "Voz 09", "nome": "Kore", "genero": "Feminina", "tags": ["média", "firme"], "dur": 33.7}]}, {"id": "dirigidas", "titulo": "Com direção de locutor", "selo": "Gemini", "descricao": "A voz recebe uma descrição do narrador (adulto, jogador antigo de Tibia, confiante, sotaque neutro de TV) e interpreta o texto. Soa mais expressiva, mas pode variar um pouco de um vídeo para outro; o sistema confere cada gravação.", "itens": [{"chave": "gemini-Charon", "rotulo": "Voz 10", "nome": "Charon + direção", "genero": "Masculina", "tags": ["narrador de games", "expressiva"], "dur": 38.3}, {"chave": "gemini-Algenib", "rotulo": "Voz 11", "nome": "Algenib + direção", "genero": "Masculina", "tags": ["grave", "narrador de games"], "dur": 36.1}, {"chave": "gemini-Gacrux", "rotulo": "Voz 12", "nome": "Gacrux + direção", "genero": "Feminina", "tags": ["narradora de games", "madura"], "dur": 41.7}]}], "pronuncia": [{"chave": "pron-a", "rotulo": "Réd-Ót", "explica": "O nome falado como uma palavra de duas sílabas"}, {"chave": "pron-b", "rotulo": "Réd-Ó-Tê", "explica": "Com as letras O e T faladas separadas"}, {"chave": "pron-c", "rotulo": "Redóte", "explica": "Tudo junto, numa palavra só"}], "legendas": [{"chave": "referencia", "rotulo": "Legenda A", "desc": "Amarela, 3 palavras por vez (igual à referência)"}, {"chave": "destaque-dourado", "rotulo": "Legenda B", "desc": "Palavra falada em dourado, com pulo"}, {"chave": "palavra-unica", "rotulo": "Legenda C", "desc": "Uma palavra grande por vez"}, {"chave": "pilula-vermelha", "rotulo": "Legenda D", "desc": "Palavra falada numa pílula vermelha"}, {"chave": "karaoke", "rotulo": "Legenda E", "desc": "Frase inteira, vai ficando dourada"}, {"chave": "minimalista", "rotulo": "Legenda F", "desc": "Discreta, frase inteira"}, {"chave": "medieval", "rotulo": "Legenda G", "desc": "Letra medieval, no clima da logo"}, {"chave": "gamer", "rotulo": "Legenda H", "desc": "Letra de quadrinho, palavra em vermelho"}], "titulos": [{"chave": "rasgo-vermelho", "rotulo": "Título 1", "desc": "Papel vermelho rasgado"}, {"chave": "rasgo-duplo", "rotulo": "Título 2", "desc": "Duas faixas: chamada preta + título vermelho"}, {"chave": "papel-fita", "rotulo": "Título 3", "desc": "Papel claro preso com fita"}, {"chave": "rasgo-medieval", "rotulo": "Título 4", "desc": "Papel vinho com letra dourada da logo"}]};
 const $ = s => document.querySelector(s);
 const esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const ICON = '<svg class="i-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg><svg class="i-pause" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 5h4v14H6zM14 5h4v14h-4z"/></svg>';
-const K = "redot-voz-escolha-v1";
-let est = {fav:null, seg:null, pron:null, nome:"", obs:""};
+const K = "redot-estilo-escolha-v2";
+let est = {fav:null, seg:null, leg:null, tit:null, pron:null, nome:"", obs:""};
 try { Object.assign(est, JSON.parse(localStorage.getItem(K) || "{}")); } catch(e) {}
 const salvar = () => { try { localStorage.setItem(K, JSON.stringify(est)); } catch(e) {} };
 const ROT = {}; // chave -> rótulo
@@ -187,6 +213,17 @@ $("#pron").innerHTML = DADOS.pronuncia.map(p => {
     <audio preload="none" src="audios/${esc(p.chave)}.mp3"></audio></div>`;
 }).join("");
 
+$("#legendas").innerHTML = DADOS.legendas.map(l => { ROT[l.chave] = l.rotulo; return `<div class="mcard" data-leg="${esc(l.chave)}">
+  <video src="legendas/${esc(l.chave)}.mp4" poster="legendas/${esc(l.chave)}.jpg" controls playsinline preload="none"></video>
+  <button class="btn" type="button" aria-pressed="false">${esc(l.rotulo)}</button><div class="desc">${esc(l.desc)}</div></div>`; }).join("");
+$("#titulos").innerHTML = DADOS.titulos.map(t => { ROT[t.chave] = t.rotulo; return `<div class="mcard" data-tit="${esc(t.chave)}">
+  <img src="titulos/${esc(t.chave)}.jpg" alt="${esc(t.rotulo)}" loading="lazy">
+  <button class="btn" type="button" aria-pressed="false">${esc(t.rotulo)}</button><div class="desc">${esc(t.desc)}</div></div>`; }).join("");
+document.addEventListener("play", e => {
+  document.querySelectorAll("video").forEach(v => { if (v !== e.target) v.pause(); });
+  if (e.target.tagName === "VIDEO") parar();          // vídeo de legenda começou: para a voz
+}, true);
+
 /* player: só um toca por vez */
 let atual = null;
 function parar(){ if(!atual) return; atual.audio.pause(); atual.el.classList.remove("tocando"); atual = null; }
@@ -217,9 +254,13 @@ function pintar(){
     c.querySelector(".b-seg").setAttribute("aria-pressed", est.seg === k);
   });
   document.querySelectorAll(".opt").forEach(o => o.setAttribute("aria-checked", est.pron === o.dataset.k));
+  document.querySelectorAll("[data-leg]").forEach(c => { const on = est.leg === c.dataset.leg; c.classList.toggle("sel", on); c.querySelector(".btn").setAttribute("aria-pressed", on); });
+  document.querySelectorAll("[data-tit]").forEach(c => { const on = est.tit === c.dataset.tit; c.classList.toggle("sel", on); c.querySelector(".btn").setAttribute("aria-pressed", on); });
   const partes = [];
   if (est.fav) partes.push(`Favorita: <b>${esc(ROT[est.fav]||est.fav)}</b>`);
   if (est.seg) partes.push(`2ª: <b>${esc(ROT[est.seg]||est.seg)}</b>`);
+  if (est.leg) partes.push(`Legenda: <b>${esc(ROT[est.leg]||est.leg)}</b>`);
+  if (est.tit) partes.push(`Título: <b>${esc(ROT[est.tit]||est.tit)}</b>`);
   if (est.pron) partes.push(`Nome: <b>${esc(ROT[est.pron]||est.pron)}</b>`);
   $("#resumo").innerHTML = partes.length ? partes.join(" · ") : "Nenhuma voz marcada ainda.";
   const pronto = !!est.fav;
@@ -227,10 +268,12 @@ function pintar(){
   env.href = pronto ? "https://api.whatsapp.com/send?text=" + encodeURIComponent(textoEnvio()) : "#";
 }
 function textoEnvio(){
-  const l = ["*Voz do RedOT — escolha*"];
+  const l = ["*Estilo dos vídeos RedOT — escolhas*"];
   if (est.nome) l.push("Quem escolheu: " + est.nome);
   l.push("Favorita: " + (est.fav ? `${ROT[est.fav]} (${est.fav})` : "—"));
   l.push("2ª opção: " + (est.seg ? `${ROT[est.seg]} (${est.seg})` : "—"));
+  l.push("Legenda: " + (est.leg ? `${ROT[est.leg]} (${est.leg})` : "—"));
+  l.push("Título: " + (est.tit ? `${ROT[est.tit]} (${est.tit})` : "—"));
   l.push("Pronúncia do nome: " + (est.pron ? `${ROT[est.pron]} (${est.pron})` : "—"));
   if (est.obs) l.push("Comentário: " + est.obs);
   return l.join("\n");
@@ -244,7 +287,10 @@ document.addEventListener("click", e => {
     salvar(); pintar(); return;
   }
   const o = e.target.closest(".opt");
-  if (o) { est.pron = o.dataset.k; salvar(); pintar(); }
+  if (o) { est.pron = o.dataset.k; salvar(); pintar(); return; }
+  const lc = e.target.closest("[data-leg] .btn"), tc = e.target.closest("[data-tit] .btn");
+  if (lc) { const k = lc.closest("[data-leg]").dataset.leg; est.leg = est.leg === k ? null : k; salvar(); pintar(); }
+  if (tc) { const k = tc.closest("[data-tit]").dataset.tit; est.tit = est.tit === k ? null : k; salvar(); pintar(); }
 });
 $("#pron").addEventListener("keydown", e => {
   const o = e.target.closest(".opt"); if(!o) return;
