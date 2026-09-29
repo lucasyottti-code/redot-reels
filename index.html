@@ -4,694 +4,262 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="robots" content="noindex">
-<title>RedOT Reels Engine</title>
-<meta name="description" content="Briefing do gerador de reels do RedOT: análise dos dois formatos de vídeo e perguntas para montar o fluxo.">
+<title>Voz do RedOT</title>
+<meta name="description" content="Escolha a voz de narração dos vídeos do RedOT.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&display=swap">
 <style>
 :root{
-  --bg:#EDEFF2; --surface:#FFFFFF; --surface-2:#F6F7F9; --ink:#15181E; --muted:#5A6170; --line:#D7DBE2;
-  --accent:#B42318; --accent-soft:#FBE9E7; --accent-ink:#FFFFFF;
-  --gold:#8A6A06; --gold-soft:#FBF3D9;
-  --ok:#1D7A4B; --ok-soft:#E3F4EA; --warn:#A95A06; --warn-soft:#FDF0DE; --bad:#B42318; --bad-soft:#FBE9E7;
-  --cap:#F5E61B; --stone:#5E6068;
-  --display:"Bebas Neue",Impact,"Arial Narrow",sans-serif;
-  --body:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
-  --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
-}
-@media (prefers-color-scheme:dark){
-  :root:not([data-theme="light"]){
-    color-scheme:dark;
-    --bg:#111317; --surface:#1A1D23; --surface-2:#20242B; --ink:#E7E9ED; --muted:#9CA3AF; --line:#2D323B;
-    --accent:#F2574B; --accent-soft:#3A1D1B; --accent-ink:#1A0B0A;
-    --gold:#E2BC4C; --gold-soft:#332A12;
-    --ok:#4FC48C; --ok-soft:#15301F; --warn:#F0A646; --warn-soft:#352612; --bad:#F2574B; --bad-soft:#3A1D1B;
-    --stone:#3A3C43;
-  }
-}
-:root[data-theme="dark"]{
   color-scheme:dark;
-  --bg:#111317; --surface:#1A1D23; --surface-2:#20242B; --ink:#E7E9ED; --muted:#9CA3AF; --line:#2D323B;
-  --accent:#F2574B; --accent-soft:#3A1D1B; --accent-ink:#1A0B0A;
-  --gold:#E2BC4C; --gold-soft:#332A12;
-  --ok:#4FC48C; --ok-soft:#15301F; --warn:#F0A646; --warn-soft:#352612; --bad:#F2574B; --bad-soft:#3A1D1B;
-  --stone:#3A3C43;
+  --bg:#0D0A09; --surface:#161110; --surface-2:#1E1714; --line:#382820; --line-2:#4A3528;
+  --ink:#F4EDE4; --muted:#B3A596; --gold:#E9B544; --gold-2:#B98A2C; --gold-soft:rgba(233,181,68,.12);
+  --red:#D8201F; --red-soft:rgba(216,32,31,.14); --ok:#6FCF97;
+  --font:"Archivo",system-ui,-apple-system,"Segoe UI",sans-serif;
 }
 *{box-sizing:border-box}
-html{scroll-padding-top:120px}
-body{background:var(--bg);color:var(--ink);font:15px/1.6 var(--body);padding-inline:16px;padding-block:0 80px;margin:0}
-.wrap{max-width:960px;margin:0 auto}
-h1,h2,h3,h4{margin:0;text-wrap:balance}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 var(--font);padding-inline:16px;padding-block:0 140px;
+  background-image:radial-gradient(ellipse 90% 50% at 50% -10%,rgba(216,32,31,.18),transparent 70%),radial-gradient(ellipse 60% 40% at 100% 100%,rgba(233,181,68,.06),transparent 70%);
+  background-attachment:fixed}
+.wrap{max-width:880px;margin:0 auto}
+h1,h2,h3{margin:0;text-wrap:balance}
 p{margin:0}
-code{font-family:var(--mono);font-size:.86em;background:var(--surface-2);border:1px solid var(--line);border-radius:4px;padding:0 4px}
+header{padding-block:28px 8px;display:grid;justify-items:center;text-align:center;gap:14px}
+header img{width:min(280px,70vw);height:auto;filter:drop-shadow(0 10px 30px rgba(0,0,0,.6))}
+.kicker{font-size:12px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:var(--gold)}
+h1{font-size:clamp(34px,7vw,52px);font-weight:900;font-stretch:112%;line-height:1;text-transform:uppercase;letter-spacing:.01em}
+h1 span{color:var(--gold)}
+.intro{max-width:58ch;color:var(--muted);font-size:16px}
+.steps{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-top:4px}
+.steps span{font-size:13px;font-weight:600;border:1px solid var(--line-2);border-radius:999px;padding:5px 12px;color:var(--ink);background:var(--surface)}
+.steps b{color:var(--gold);margin-right:6px}
 
-/* top bar */
-.bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:10;background:var(--bg);border-bottom:1px solid var(--line);margin-inline:-16px;padding:10px 16px 0}
-.bar-inner{max-width:960px;margin:0 auto;display:flex;flex-direction:column;gap:10px}
-.bar-row{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
-.brand{font-family:var(--display);font-size:26px;letter-spacing:.02em;line-height:1}
-.brand b{color:var(--accent);font-weight:400}
-.prog{flex:1;min-width:150px;display:flex;align-items:center;gap:10px}
-.prog-track{flex:1;height:6px;background:var(--line);border-radius:3px;overflow:hidden}
-.prog-fill{height:100%;background:var(--accent);width:0;transition:width .3s}
-.prog-txt{font-family:var(--mono);font-size:12px;color:var(--muted);white-space:nowrap;font-variant-numeric:tabular-nums}
-.save{font-size:12px;color:var(--muted);white-space:nowrap;display:flex;align-items:center;gap:6px}
-.save i{width:8px;height:8px;border-radius:50%;background:var(--muted);display:inline-block}
-.save[data-s="ok"] i{background:var(--ok)} .save[data-s="busy"] i{background:var(--warn)} .save[data-s="err"] i{background:var(--bad)}
-.tabs{display:flex;gap:4px;overflow-x:auto;scrollbar-width:none}
-.tabs::-webkit-scrollbar{display:none}
-.tab{flex:none;font:inherit;font-size:14px;font-weight:600;color:var(--muted);background:none;border:0;border-bottom:3px solid transparent;padding:6px 12px 9px;cursor:pointer;display:flex;align-items:baseline;gap:8px;white-space:nowrap}
-.tab .k{font-family:var(--mono);font-size:11px;font-weight:500}
-.tab .c{font-family:var(--mono);font-size:11px;font-weight:500;color:var(--muted);font-variant-numeric:tabular-nums}
-.tab:hover{color:var(--ink)}
-.tab[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--accent)}
-.tab[aria-selected="true"] .k{color:var(--accent)}
-.tab:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
+section{padding-block:34px 4px}
+.sec-head{display:grid;gap:6px;margin-bottom:16px}
+.sec-head h2{font-size:clamp(22px,4vw,28px);font-weight:800;font-stretch:110%;text-transform:uppercase;letter-spacing:.02em}
+.sec-head h2 small{font-size:.55em;color:var(--gold);letter-spacing:.14em;margin-left:8px;vertical-align:middle}
+.sec-head p{color:var(--muted);max-width:66ch;font-size:15px}
 
-/* header */
-.hero{padding-block:32px 4px;display:grid;gap:12px}
-.eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
-.hero h1{font-family:var(--display);font-weight:400;font-size:clamp(40px,7vw,62px);line-height:.95;letter-spacing:.01em}
-.hero h1 span{color:var(--accent)}
-.hero p{max-width:66ch;color:var(--muted)}
-.fmt-pick{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr));gap:10px;margin-top:6px}
-.fmt-card{font:inherit;text-align:left;cursor:pointer;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:14px 16px;display:grid;gap:4px;color:var(--ink)}
-.fmt-card:hover{border-color:var(--muted)}
-.fmt-card[aria-pressed="true"]{border-color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent)}
-.fmt-card .k{font-family:var(--mono);font-size:11px;color:var(--accent);letter-spacing:.06em;text-transform:uppercase}
-.fmt-card b{font-size:16px}
-.fmt-card span{font-size:13px;color:var(--muted)}
+.texto{background:var(--surface);border:1px solid var(--line);border-left:3px solid var(--gold);border-radius:10px;padding:14px 16px;font-size:15px;color:var(--ink)}
+.texto .nota{display:block;margin-top:8px;font-size:12.5px;color:var(--muted)}
 
-section{padding-block:36px 4px}
-.sec-head{display:flex;align-items:baseline;gap:12px;margin-bottom:6px;flex-wrap:wrap}
-.sec-num{font-family:var(--mono);font-size:13px;color:var(--accent)}
-.sec-head h2{font-family:var(--display);font-weight:400;font-size:clamp(28px,4.5vw,38px);letter-spacing:.015em;line-height:1}
-.lead{color:var(--muted);max-width:68ch;margin-bottom:16px}
-h3{font-size:17px;font-weight:700}
-.stack{display:grid;gap:14px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,260px),1fr));gap:12px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px;display:grid;gap:12px;align-content:start;position:relative;transition:border-color .15s,box-shadow .15s}
+.card.fav{border-color:var(--gold);box-shadow:0 0 0 1px var(--gold),0 8px 30px rgba(233,181,68,.12)}
+.card.seg{border-color:var(--line-2);box-shadow:0 0 0 1px var(--muted)}
+.card.tocando{border-color:var(--red)}
+.top{display:flex;align-items:center;gap:12px}
+.play{flex:none;width:52px;height:52px;border-radius:50%;border:0;cursor:pointer;background:var(--red);color:#fff;display:grid;place-items:center;box-shadow:0 4px 14px rgba(216,32,31,.35)}
+.play:hover{filter:brightness(1.1)}
+.play svg{width:20px;height:20px;fill:currentColor}
+.play .i-pause{display:none}
+.card.tocando .play .i-play{display:none}
+.card.tocando .play .i-pause{display:block}
+.nome{display:grid;gap:2px;min-width:0}
+.nome b{font-size:18px;font-weight:800;font-stretch:105%}
+.nome span{font-size:12.5px;color:var(--muted)}
+.tags{display:flex;flex-wrap:wrap;gap:5px}
+.tag{font-size:11.5px;font-weight:600;padding:2px 8px;border-radius:999px;background:var(--surface-2);border:1px solid var(--line);color:var(--muted)}
+.tag.g{color:var(--gold);border-color:rgba(233,181,68,.35);background:var(--gold-soft)}
+.barra{height:4px;background:var(--line);border-radius:2px;overflow:hidden;cursor:pointer}
+.barra i{display:block;height:100%;width:0;background:var(--gold)}
+.tempo{display:flex;justify-content:space-between;font-size:11.5px;color:var(--muted);font-variant-numeric:tabular-nums;margin-top:-6px}
+.acoes{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.btn{font:inherit;font-size:13.5px;font-weight:700;border-radius:8px;padding:9px 10px;cursor:pointer;border:1px solid var(--line-2);background:var(--surface-2);color:var(--ink);display:inline-flex;align-items:center;justify-content:center;gap:6px}
+.btn:hover{border-color:var(--muted)}
+.btn[aria-pressed="true"].b-fav{background:var(--gold);border-color:var(--gold);color:#1A1208}
+.btn[aria-pressed="true"].b-seg{background:var(--ink);border-color:var(--ink);color:#1A1208}
+.btn:focus-visible,.play:focus-visible,.opt:focus-visible,textarea:focus-visible,input:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+.selo{position:absolute;top:-9px;right:12px;font-size:10.5px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;padding:2px 8px;border-radius:4px;background:var(--gold);color:#1A1208;display:none}
+.card.fav .selo.s-fav{display:block}
+.card.seg .selo.s-seg{display:block;background:var(--ink)}
 
-/* reference card */
-.ref{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:18px;display:grid;grid-template-columns:118px 1fr 1fr;gap:18px 22px;align-items:start}
-.ref .tag{font-family:var(--mono);font-size:11.5px;color:var(--muted)}
-.ref h3{margin:2px 0 0}
-.specs{display:grid;grid-template-columns:auto 1fr;gap:3px 12px;font-size:13px;margin:8px 0 0}
-.specs dt{color:var(--muted)} .specs dd{margin:0;font-variant-numeric:tabular-nums}
-.ref .tl{grid-column:1 / -1}
-.ref .obs{grid-column:1 / -1}
-@media (max-width:760px){ .ref{grid-template-columns:118px 1fr} .ref .tlcol{grid-column:1 / -1} }
-@media (max-width:460px){ .ref{grid-template-columns:1fr} .ref .phone-box{justify-self:center} }
+.pron{display:grid;gap:10px}
+.opt{display:flex;align-items:center;gap:12px;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:10px 12px;cursor:pointer;text-align:left;font:inherit;color:var(--ink)}
+.opt .play{width:42px;height:42px}
+.opt .t{flex:1;display:grid}
+.opt .t b{font-size:17px;font-weight:800}
+.opt .t span{font-size:12.5px;color:var(--muted)}
+.opt .mk{width:20px;height:20px;border-radius:50%;border:2px solid var(--line-2);flex:none}
+.opt[aria-checked="true"]{border-color:var(--gold)}
+.opt[aria-checked="true"] .mk{border-color:var(--gold);background:radial-gradient(circle,var(--gold) 45%,transparent 50%)}
 
-/* phone mock */
-.phone{width:118px;aspect-ratio:9/16;max-width:100%;border-radius:12px;border:3px solid var(--ink);position:relative;overflow:hidden;background:var(--stone)}
-.phone .game{position:absolute;inset:0;background:
-  repeating-linear-gradient(0deg,transparent 0 13px,rgba(0,0,0,.18) 13px 14px),
-  repeating-linear-gradient(90deg,transparent 0 13px,rgba(0,0,0,.18) 13px 14px),#6B5A7A}
-.phone .char{position:absolute;left:50%;top:48%;width:14px;height:14px;margin:-7px 0 0 -7px;background:#C0392B;border-radius:3px;box-shadow:0 0 0 2px #F5D76E}
-.phone .logo{position:absolute;left:50%;top:5%;transform:translateX(-50%);width:26px;height:26px;border-radius:50%;background:#7A1712;border:2px solid #E0A33B}
-.phone .capt{position:absolute;left:8%;right:8%;top:73%;font-family:var(--display);font-size:13px;color:var(--cap);text-align:center;text-shadow:0 1px 0 #000,0 0 3px #000;line-height:1}
-.phone .cam{position:absolute;left:0;right:0;top:0;height:34%;background:linear-gradient(160deg,#2B3A55,#0E1422);border-bottom:2px solid #000}
-.phone .cam::after{content:"";position:absolute;left:42%;top:26%;width:18px;height:22px;border-radius:50% 50% 40% 40%;background:#B08968}
-.phone .gm2{position:absolute;left:0;right:0;top:34%;bottom:0;background:
-  repeating-linear-gradient(0deg,transparent 0 11px,rgba(0,0,0,.12) 11px 12px),
-  repeating-linear-gradient(90deg,transparent 0 11px,rgba(0,0,0,.12) 11px 12px),#D9C58F}
-.phone .capt2{position:absolute;left:6%;right:6%;top:58%;font:600 8px/1.1 var(--body);color:#fff;text-align:center;text-shadow:0 0 2px #000,0 0 2px #000}
-.phone .badge{position:absolute;left:50%;bottom:7%;transform:translateX(-50%);width:44px;height:22px;border-radius:3px;background:#1C150B;border:1.5px solid #D4A93A}
-.phone-lbl{font-family:var(--mono);font-size:10.5px;color:var(--muted);text-align:center;margin-top:6px}
+.final{display:grid;gap:12px;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:16px}
+.final label{font-size:13px;font-weight:700}
+.final textarea,.final input{font:inherit;font-size:15px;color:var(--ink);background:var(--bg);border:1px solid var(--line-2);border-radius:8px;padding:10px 12px;width:100%}
+.final textarea{min-height:84px;resize:vertical}
+::placeholder{color:#7d7064}
 
-/* timeline */
-.tl{display:grid;gap:6px}
-.tl-bar{display:flex;height:26px;border-radius:6px;overflow:hidden;border:1px solid var(--line)}
-.tl-bar span{display:block;height:100%;border-right:1px solid var(--surface)}
-.tl-bar span:last-child{border-right:0}
-.tl-list{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,380px),1fr));gap:5px 20px;font-size:13px}
-.tl-list div{display:grid;grid-template-columns:12px 74px 1fr;gap:8px;align-items:baseline}
-.tl-list i{width:10px;height:10px;border-radius:2px;display:inline-block;transform:translateY(1px)}
-.tl-list .t{font-family:var(--mono);font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums}
-.b1{background:#B42318} .b2{background:#D9822B} .b3{background:#C9A227} .b4{background:#4F8A5B} .b5{background:#3C7A9E} .b6{background:#6B5FA8} .b7{background:#8B5E83} .b8{background:#6A6F7A}
-
-.obs{font-size:13.5px;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,380px),1fr));gap:6px 20px;padding:14px 0 0;margin:0;list-style:none;border-top:1px solid var(--line)}
-.obs li{padding-left:16px;position:relative}
-.obs li::before{content:"";position:absolute;left:2px;top:.65em;width:6px;height:6px;border-radius:1px;background:var(--accent)}
-
-/* verdict / callouts */
-.panel{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:18px 20px;display:grid;gap:12px}
-.verdict-top{display:flex;gap:14px;align-items:flex-start;flex-wrap:wrap}
-.stamp{font-family:var(--display);font-size:24px;line-height:1;color:var(--ok);border:2px solid var(--ok);border-radius:6px;padding:6px 10px 3px;transform:rotate(-2deg);flex:none}
-.stamp.warn{color:var(--warn);border-color:var(--warn)}
-.verdict-top h3{font-size:17px;line-height:1.4;flex:1;min-width:230px}
-.panel p{font-size:14px;max-width:74ch}
-.callout{border-left:3px solid var(--gold);background:var(--gold-soft);padding:10px 14px;border-radius:0 8px 8px 0;font-size:13.5px}
-.callout b{color:var(--gold)}
-.split{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:12px}
-.split h4{font-size:13px;text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px}
-.split .y h4{color:var(--ok)} .split .n h4{color:var(--warn)}
-.split ul{margin:0;padding-left:18px;font-size:13.5px;display:grid;gap:3px}
-
-.tbl-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:8px}
-table{border-collapse:collapse;width:100%;min-width:620px;font-size:13.5px}
-th,td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--line);vertical-align:top}
-th{font-size:11.5px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);font-weight:600;background:var(--surface-2)}
-tr:last-child td{border-bottom:0}
-tr.rec td{background:var(--ok-soft)}
-td b{display:block}
-.pill{display:inline-block;font-size:11.5px;font-weight:600;padding:2px 8px;border-radius:999px;white-space:nowrap}
-.p-ok{background:var(--ok-soft);color:var(--ok)} .p-warn{background:var(--warn-soft);color:var(--warn)} .p-bad{background:var(--bad-soft);color:var(--bad)}
-tr.rec .p-ok{background:var(--surface)}
-
-/* pipeline */
-.pipe{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-bottom:4px}
-.pipe a{text-decoration:none;color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:6px 11px;display:flex;gap:6px;align-items:baseline;font-size:13.5px;font-weight:600}
-.pipe a:hover{border-color:var(--accent)}
-.pipe a .k{font-family:var(--mono);font-size:11px;color:var(--accent);font-weight:500}
-.pipe .arr{color:var(--muted);font-family:var(--mono);font-size:12px}
-
-/* stage */
-.stage{background:var(--surface);border:1px solid var(--line);border-radius:12px;overflow:hidden;scroll-margin-top:130px}
-.stage + .stage{margin-top:12px}
-.stage-top{padding:16px 20px;display:grid;gap:8px;background:var(--surface-2)}
-.stage-top.has-q{border-bottom:1px solid var(--line)}
-.stage-title{display:flex;gap:10px;align-items:baseline}
-.stage-title .k{font-family:var(--mono);font-size:12px;color:var(--accent)}
-.stage-title h3{font-size:17px}
-.stage-top ul{margin:0;padding-left:18px;font-size:14px;display:grid;gap:3px;max-width:78ch}
-.stage-extra{padding:16px 20px;border-bottom:1px solid var(--line);display:grid;gap:12px}
-.q{padding:16px 20px;border-bottom:1px solid var(--line);display:grid;gap:9px}
-.q:last-child{border-bottom:0}
-.q-head{display:grid;grid-template-columns:auto 1fr auto;gap:10px;align-items:baseline}
-.q-id{font-family:var(--mono);font-size:11.5px;color:var(--muted)}
-.q h4{font-size:15.5px;font-weight:600;line-height:1.4}
-.q-done{font-size:11px;font-weight:600;color:var(--ok);opacity:0;transition:opacity .2s;white-space:nowrap}
-.q.answered .q-done{opacity:1}
-.q-help{font-size:13px;color:var(--muted);max-width:74ch}
-.opts{display:flex;flex-wrap:wrap;gap:6px}
-.opt{font:inherit;font-size:13.5px;color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:7px 12px;cursor:pointer;text-align:left;display:inline-flex;align-items:center;gap:8px;line-height:1.3}
-.opt:hover{border-color:var(--muted)}
-.opt:focus-visible,.note:focus-visible,.txt:focus-visible,.btn:focus-visible,.fmt-card:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
-.opt .mk{width:14px;height:14px;border:1.5px solid var(--muted);border-radius:50%;flex:none;display:grid;place-items:center}
-.opt[data-multi] .mk{border-radius:3px}
-.opt[aria-pressed="true"]{border-color:var(--accent);background:var(--accent-soft)}
-.opt[aria-pressed="true"] .mk{border-color:var(--accent);background:var(--accent)}
-.opt[aria-pressed="true"] .mk::after{content:"";width:5px;height:5px;border-radius:50%;background:var(--surface)}
-.opt[data-multi][aria-pressed="true"] .mk::after{width:4px;height:7px;border-radius:0;background:none;border:solid var(--surface);border-width:0 2px 2px 0;transform:rotate(45deg) translate(-1px,-1px)}
-.opt .rec{font-size:10.5px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--gold);background:var(--gold-soft);padding:1px 6px;border-radius:4px}
-.note,.txt{font:inherit;font-size:13.5px;color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:8px 11px;width:100%}
-.txt{min-height:72px;resize:vertical}
-.note::placeholder,.txt::placeholder{color:var(--muted);opacity:.8}
-
-/* ideas */
-.ideas{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr));gap:12px}
-.idea{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:15px;display:grid;gap:6px;align-content:start}
-.idea h3{font-size:15px}
-.idea p{font-size:13.5px;color:var(--muted)}
-.idea .imp{font-family:var(--mono);font-size:11px;color:var(--gold)}
-
-.send{margin-top:36px;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:20px;display:grid;gap:12px}
-.send p{font-size:14px;color:var(--muted);max-width:70ch}
-.send label{font-size:13px;font-weight:600}
-.btns{display:flex;gap:8px;flex-wrap:wrap}
-.btn{font:inherit;font-size:14px;font-weight:600;border-radius:8px;padding:9px 16px;cursor:pointer;border:1px solid var(--line);background:var(--surface);color:var(--ink)}
-.btn.pri{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
-#copyOut{font-family:var(--mono);font-size:12px;min-height:140px}
-.next{display:flex;justify-content:flex-end;margin-top:16px}
-.shared-head{margin-top:44px;padding-top:28px;border-top:2px solid var(--ink)}
-
-@media (max-width:560px){ .q,.stage-top,.stage-extra{padding-inline:16px} }
+.dock{position:fixed;left:0;right:0;bottom:0;z-index:10;background:rgba(13,10,9,.94);backdrop-filter:blur(8px);border-top:1px solid var(--line);padding:10px 16px calc(10px + env(safe-area-inset-bottom,0px))}
+.dock-in{max-width:880px;margin:0 auto;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.resumo{flex:1;min-width:200px;font-size:13px;color:var(--muted);line-height:1.35}
+.resumo b{color:var(--ink)}
+.enviar{font:inherit;font-weight:800;font-size:15px;border:0;border-radius:10px;padding:12px 18px;background:var(--gold);color:#1A1208;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:8px}
+.enviar[aria-disabled="true"]{opacity:.45;pointer-events:none}
+.copiar{font:inherit;font-weight:700;font-size:14px;border:1px solid var(--line-2);border-radius:10px;padding:11px 14px;background:transparent;color:var(--ink);cursor:pointer}
+.dock-btns{display:flex;gap:8px}
+@media (max-width:560px){.resumo{flex-basis:100%}.dock-btns{flex:1}.enviar{flex:1;justify-content:center}}
+footer{margin-top:40px;text-align:center;font-size:12px;color:#7d7064}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <img src="img/redot-logo.png" alt="RedOT" width="720" height="447">
+    <div class="kicker">Vídeos de features · narração</div>
+    <h1>Escolha a <span>voz</span> do RedOT</h1>
+    <p class="intro">Essa vai ser a voz que narra os vídeos das features do servidor. Todas as opções leem o mesmo texto de exemplo. Ouça, marque a sua favorita e, se quiser, uma segunda opção.</p>
+    <div class="steps"><span><b>1</b>Ouça</span><span><b>2</b>Marque a favorita</span><span><b>3</b>Escolha como falar "RedOT"</span><span><b>4</b>Envie</span></div>
+  </header>
 
-<div class="bar">
-  <div class="bar-inner">
-    <div class="bar-row">
-      <div class="brand">RED<b>OT</b> REELS</div>
-      <div class="prog"><div class="prog-track"><div class="prog-fill" id="progFill"></div></div><span class="prog-txt" id="progTxt">0/0 respondidas</span></div>
-      <div class="save" id="save" data-s="idle"><i></i><span id="saveTxt">salvo neste navegador</span></div>
+  <section>
+    <div class="sec-head"><h2>O texto de exemplo</h2><p>É só um exemplo pra comparar as vozes. O sistema de ranking de bosses é inventado.</p></div>
+    <div class="texto" id="texto"></div>
+  </section>
+
+  <div id="grupos"></div>
+
+  <section id="sec-pron">
+    <div class="sec-head"><h2>Como falar o nome? <small>Pronúncia</small></h2><p>A mesma voz falando "RedOT" de jeitos diferentes. Escolha o jeito certo e a gente trava a pronúncia em todos os vídeos.</p></div>
+    <div class="pron" id="pron" role="radiogroup" aria-label="Pronúncia de RedOT"></div>
+  </section>
+
+  <section>
+    <div class="sec-head"><h2>Algum comentário?</h2><p>Opcional. Ex.: "gostei da voz 3, mas um pouco mais rápida".</p></div>
+    <div class="final">
+      <div style="display:grid;gap:6px"><label for="nome">Seu nome</label><input id="nome" type="text" autocomplete="name" placeholder="Quem está escolhendo"></div>
+      <div style="display:grid;gap:6px"><label for="obs">Comentário</label><textarea id="obs" placeholder="Escreva aqui…"></textarea></div>
     </div>
-    <div class="tabs" role="tablist" aria-label="Formatos de vídeo">
-      <button class="tab" role="tab" id="tab-f1" aria-controls="panel-f1" aria-selected="true" data-tab="f1"><span class="k">F1</span>Feature com voz IA<span class="c" data-count="f1"></span></button>
-      <button class="tab" role="tab" id="tab-f2" aria-controls="panel-f2" aria-selected="false" data-tab="f2"><span class="k">F2</span>Cortes de streamer<span class="c" data-count="f2"></span></button>
-      <button class="tab" role="tab" id="tab-g" aria-controls="panel-g" aria-selected="false" data-tab="g"><span class="k">+</span>Comum aos dois<span class="c" data-count="g"></span></button>
-    </div>
+  </section>
+
+  <footer>Amostras geradas com o Google Cloud Text-to-Speech · a velocidade e a pronúncia de cada palavra podem ser ajustadas depois.</footer>
+</div>
+
+<div class="dock">
+  <div class="dock-in">
+    <div class="resumo" id="resumo">Nenhuma voz marcada ainda.</div>
+    <div class="dock-btns"><button class="copiar" id="copiar" type="button">Copiar</button>
+    <a class="enviar" id="enviar" href="#" target="_blank" rel="noopener" aria-disabled="true">Enviar pelo WhatsApp</a></div>
   </div>
 </div>
 
-<main class="wrap">
-  <header class="hero">
-    <div class="eyebrow">Briefing · gerador de reels · set 2026</div>
-    <h1>Reels automáticos do <span>RedOT</span></h1>
-    <p>Vamos produzir dois tipos de vídeo, cada um com um fluxo diferente. Em cada aba tem a análise do vídeo de referência, como o fluxo vai funcionar e as perguntas que precisamos que você responda. As respostas ficam salvas sozinhas. No fim, clique em <b>Enviar respostas</b>.</p>
-    <div class="fmt-pick">
-      <button class="fmt-card" type="button" data-tab="f1" aria-pressed="true"><span class="k">Formato 1</span><b>Feature explicada com voz IA</b><span>Narração sintética sobre uma feature exclusiva, com gameplay gravado por bot. 100% automático.</span></button>
-      <button class="fmt-card" type="button" data-tab="f2" aria-pressed="false"><span class="k">Formato 2</span><b>Cortes de lives de streamers</b><span>Streamer real jogando e reagindo. A IA acha os melhores momentos e monta os cortes.</span></button>
-    </div>
-  </header>
-
-  <!-- ============ F1 ============ -->
-  <div role="tabpanel" id="panel-f1" aria-labelledby="tab-f1" data-panel="f1">
-    <section>
-      <div class="sec-head"><span class="sec-num">F1 · A</span><h2>Vídeo de referência</h2></div>
-      <article class="ref">
-        <div class="phone-box"><div class="phone"><div class="game"></div><div class="char"></div><div class="logo"></div><div class="capt">CONFORME VOCÊ COMPLETA</div></div><div class="phone-lbl">tela cheia + zoom</div></div>
-        <div>
-          <div class="tag">InferniaOT · "Sistema de Badges"</div>
-          <h3>Feature explicada por voz IA</h3>
-          <dl class="specs">
-            <dt>Duração</dt><dd>1:59</dd>
-            <dt>Narração</dt><dd>TTS PT-BR, 161 palavras/min</dd>
-            <dt>Frases</dt><dd>19, cerca de 5,5s cada</dd>
-            <dt>Áudio</dt><dd>voz + música baixa, −14 LUFS</dd>
-            <dt>Cortes</dt><dd>a cada 3 a 8s</dd>
-          </dl>
-        </div>
-        <div class="tl tlcol">
-          <div class="tl-bar" aria-hidden="true">
-            <span class="b1" style="width:6%"></span><span class="b2" style="width:9%"></span><span class="b3" style="width:24%"></span><span class="b4" style="width:21%"></span><span class="b5" style="width:17%"></span><span class="b6" style="width:10%"></span><span class="b7" style="width:10%"></span><span class="b8" style="width:3%"></span>
-          </div>
-          <div class="tl-list" style="grid-template-columns:1fr">
-            <div><i class="b1"></i><span class="t">0:00–0:06</span><span><b>Gancho</b> em pergunta</span></div>
-            <div><i class="b2"></i><span class="t">0:07–0:17</span><span><b>Nomeia a feature</b></span></div>
-            <div><i class="b3"></i><span class="t">0:17–0:45</span><span><b>Camada 1:</b> como ganhar e o bônus</span></div>
-            <div><i class="b4"></i><span class="t">0:46–1:11</span><span><b>Camada 2:</b> "Mas não para por aí"</span></div>
-            <div><i class="b5"></i><span class="t">1:11–1:31</span><span><b>Camada 3:</b> área exclusiva</span></div>
-            <div><i class="b6"></i><span class="t">1:31–1:43</span><span><b>Ressalva</b> (gera tensão)</span></div>
-            <div><i class="b7"></i><span class="t">1:43–1:55</span><span><b>CTA</b></span></div>
-            <div><i class="b8"></i><span class="t">1:56–1:59</span><span><b>Pergunta</b> pros comentários</span></div>
-          </div>
-        </div>
-        <ul class="obs">
-          <li>A imagem acompanha a fala: quando cita o NPC, mostra a janela do NPC. Por isso o roteiro precisa sair com a cena de cada frase.</li>
-          <li>Legenda amarela em caixa alta, fonte condensada, 2 a 3 palavras por vez. Logo do servidor fixo no topo.</li>
-          <li>Gameplay com zoom forte (~2,5x) no centro. Assim a pixel art fica legível no celular.</li>
-          <li>A voz erra nomes ("Infernal T", "Bad Points"). Vamos precisar de um dicionário de pronúncia.</li>
-        </ul>
-      </article>
-    </section>
-
-    <section>
-      <div class="sec-head"><span class="sec-num">F1 · B</span><h2>Fluxo e perguntas</h2></div>
-      <p class="lead">Cinco etapas. Em cada uma: como vai funcionar e o que precisamos saber de você. Opções marcadas com <span class="pill" style="background:var(--gold-soft);color:var(--gold)">REC</span> são a nossa recomendação.</p>
-      <nav class="pipe" aria-label="Etapas do formato 1">
-        <a href="#st-f1-pauta"><span class="k">1</span>Pauta</a><span class="arr">→</span>
-        <a href="#st-f1-roteiro"><span class="k">2</span>Roteiro</a><span class="arr">→</span>
-        <a href="#st-f1-narracao"><span class="k">3</span>Narração</a><span class="arr">→</span>
-        <a href="#st-f1-gravacao"><span class="k">4</span>Gravação</a><span class="arr">→</span>
-        <a href="#st-f1-edicao"><span class="k">5</span>Edição</a><span class="arr">→</span>
-        <a href="#panel-g" data-goto="g"><span class="k">+</span>Aprovação e postagem</a>
-      </nav>
-      <div data-stages="f1"></div>
-      <div class="next"><button class="btn" type="button" data-goto="f2">Próximo: Formato 2 · Cortes de streamer →</button></div>
-    </section>
-  </div>
-
-  <!-- ============ F2 ============ -->
-  <div role="tabpanel" id="panel-f2" aria-labelledby="tab-f2" data-panel="f2" hidden>
-    <section>
-      <div class="sec-head"><span class="sec-num">F2 · A</span><h2>Vídeo de referência</h2></div>
-      <article class="ref">
-        <div class="phone-box"><div class="phone"><div class="cam"></div><div class="gm2"></div><div class="capt2">olha peguei uma instância de Asura</div><div class="badge"></div></div><div class="phone-lbl">facecam + jogo</div></div>
-        <div>
-          <div class="tag">King Aslan Global · streamer Matts</div>
-          <h3>Corte de live com publi</h3>
-          <dl class="specs">
-            <dt>Duração</dt><dd>2:07</dd>
-            <dt>Fala</dt><dd>humana, 207 palavras/min</dd>
-            <dt>Layout</dt><dd>facecam 34% + jogo 66%</dd>
-            <dt>Marca</dt><dd>selo fixo "Abertura 04/09"</dd>
-            <dt>Fecho</dt><dd>end card do canal (5s)</dd>
-          </dl>
-        </div>
-        <div class="tl tlcol">
-          <div class="tl-bar" aria-hidden="true">
-            <span class="b1" style="width:8%"></span><span class="b2" style="width:16%"></span><span class="b3" style="width:23%"></span><span class="b4" style="width:24%"></span><span class="b5" style="width:7%"></span><span class="b6" style="width:10%"></span><span class="b7" style="width:8%"></span><span class="b8" style="width:4%"></span>
-          </div>
-          <div class="tl-list" style="grid-template-columns:1fr">
-            <div><i class="b1"></i><span class="t">0:00–0:10</span><span><b>Gancho:</b> conquista rara + meme</span></div>
-            <div><i class="b2"></i><span class="t">0:10–0:30</span><span><b>Reação</b> e empolgação</span></div>
-            <div><i class="b3"></i><span class="t">0:30–1:00</span><span><b>Explica jogando</b> a feature</span></div>
-            <div><i class="b4"></i><span class="t">1:00–1:30</span><span><b>Testa ao vivo</b> (curiosidade)</span></div>
-            <div><i class="b5"></i><span class="t">1:30–1:39</span><span><b>Pitch</b> + banner grande</span></div>
-            <div><i class="b6"></i><span class="t">1:39–1:52</span><span><b>Segundo teste</b></span></div>
-            <div><i class="b7"></i><span class="t">1:52–2:02</span><span><b>CTA:</b> link na descrição</span></div>
-            <div><i class="b8"></i><span class="t">2:02–2:07</span><span><b>End card</b> do streamer</span></div>
-          </div>
-        </div>
-        <ul class="obs">
-          <li>A força vem da reação real e da prova social ("700 online", "servidor com 7 dias"). Voz de IA não passa isso.</li>
-          <li>Legenda branca, minúscula, 1 a 2 linhas no meio da tela. É o estilo padrão de clipador.</li>
-          <li>Selo do patrocinador fixo no rodapé do vídeo inteiro, e em versão grande na hora do pitch.</li>
-          <li>Jump cuts pra tirar silêncio, e um meme de reação inserido no gancho.</li>
-        </ul>
-      </article>
-    </section>
-
-    <section>
-      <div class="sec-head"><span class="sec-num">F2 · B</span><h2>O que dá pra automatizar</h2></div>
-      <div class="panel">
-        <div class="verdict-top">
-          <div class="stamp warn">PRECISA DE STREAMER</div>
-          <h3>Esse formato não dá pra gerar do zero com IA. O que automatizamos é todo o trabalho de clipador: da live gravada até o corte pronto pra postar.</h3>
-        </div>
-        <div class="split">
-          <div class="y"><h4>Automático</h4><ul><li>Baixar a live assim que termina</li><li>Transcrever e achar os melhores momentos</li><li>Recortar a facecam e a tela do jogo em 9:16</li><li>Tirar silêncios, legendar e aplicar o selo</li><li>Mandar pra aprovação e postar</li></ul></div>
-          <div class="n"><h4>Depende de pessoas</h4><ul><li>Streamer jogando no RedOT e falando do servidor</li><li>Autorização pra usar o conteúdo da live</li><li>Marcar uma vez a posição da câmera e do jogo no layout de cada streamer</li></ul></div>
-        </div>
-        <div class="callout"><b>Não recomendamos avatar de IA na facecam.</b> O público de Tibia percebe rápido e o vídeo perde a credibilidade, que é justamente o que esse formato vende.</div>
-      </div>
-    </section>
-
-    <section>
-      <div class="sec-head"><span class="sec-num">F2 · C</span><h2>Fluxo e perguntas</h2></div>
-      <p class="lead">Quatro etapas, da live até o corte pronto.</p>
-      <nav class="pipe" aria-label="Etapas do formato 2">
-        <a href="#st-f2-captura"><span class="k">1</span>Captura da live</a><span class="arr">→</span>
-        <a href="#st-f2-momentos"><span class="k">2</span>Achar momentos</a><span class="arr">→</span>
-        <a href="#st-f2-montagem"><span class="k">3</span>Montagem</a><span class="arr">→</span>
-        <a href="#st-f2-post"><span class="k">4</span>Aprovação e conta</a>
-      </nav>
-      <div data-stages="f2"></div>
-      <div class="next"><button class="btn" type="button" data-goto="g">Próximo: Comum aos dois formatos →</button></div>
-    </section>
-  </div>
-
-  <!-- ============ Comum ============ -->
-  <div role="tabpanel" id="panel-g" aria-labelledby="tab-g" data-panel="g" hidden>
-    <section>
-      <div class="sec-head"><span class="sec-num">+ · A</span><h2>Comum aos dois formatos</h2></div>
-      <p class="lead">Decisões que valem pros dois tipos de vídeo: marca, redes, aprovação e o que precisamos receber de você.</p>
-      <div data-stages="g"></div>
-    </section>
-
-    <section>
-      <div class="sec-head"><span class="sec-num">+ · B</span><h2>Ideias pra ir além</h2></div>
-      <p class="lead">Coisas que podemos adicionar ao fluxo. Não precisa responder nada aqui.</p>
-      <div class="ideas">
-        <div class="idea"><span class="imp">F1 · desde o início</span><h3>Ficha de feature tirada do código</h3><p>A IA lê o código do servidor e monta uma ficha por feature, com números exatos, NPC e local. O roteiro usa só a ficha, então não inventa dados.</p></div>
-        <div class="idea"><span class="imp">F1 · fase 2</span><h3>Update novo vira vídeo</h3><p>Quando entra uma feature nova no código, o sistema já gera um rascunho de reel e manda pra aprovação no mesmo dia.</p></div>
-        <div class="idea"><span class="imp">F1 · fase 3</span><h3>Mesma gravação, outros idiomas</h3><p>Trocar só a narração pra espanhol ou inglês multiplica o alcance quase sem custo. Tibia é forte na América Latina e na Polônia.</p></div>
-        <div class="idea"><span class="imp">F2 · fase 2</span><h3>Ranking de streamers</h3><p>Medir quais parceiros geram mais views e cadastros pelos cortes, pra decidir onde investir patrocínio.</p></div>
-        <div class="idea"><span class="imp">F2 · fase 2</span><h3>Post em collab</h3><p>No Instagram e no TikTok, o corte sai na conta do servidor e na do streamer ao mesmo tempo, somando os dois públicos.</p></div>
-        <div class="idea"><span class="imp">Ambos · fase 2</span><h3>Números reais do servidor</h3><p>Players online, bosses mortos hoje, maior level, puxados do banco de dados. A prova social entra sempre atualizada.</p></div>
-        <div class="idea"><span class="imp">Ambos · fase 2</span><h3>3 ganchos por vídeo</h3><p>Gerar 3 aberturas diferentes e testar uma por plataforma. Os primeiros 3 segundos decidem quase tudo.</p></div>
-        <div class="idea"><span class="imp">Ambos · contínuo</span><h3>Biblioteca de clipes</h3><p>Todo trecho gravado ou cortado fica salvo e etiquetado por feature e local. Com o tempo, vídeos novos saem sem gravar nada.</p></div>
-      </div>
-    </section>
-  </div>
-
-  <div class="send" id="enviar">
-    <h3>Enviar respostas</h3>
-    <p>Suas respostas ficam salvas neste navegador enquanto você preenche, mesmo se fechar a página. Quando terminar as três abas, copie o texto e mande pra gente pelo WhatsApp ou e-mail, ou baixe o arquivo.</p>
-    <div style="display:grid;gap:6px;max-width:420px"><label for="respName">Seu nome</label><input class="note" id="respName" type="text" placeholder="Quem está respondendo" autocomplete="name"></div>
-    <div class="btns"><button class="btn pri" id="copyBtn" type="button">Copiar respostas</button><button class="btn" id="dlBtn" type="button">Baixar arquivo .txt</button></div>
-    <textarea id="copyOut" class="txt" hidden readonly aria-label="Respostas em texto"></textarea>
-  </div>
-</main>
-
 <script>
-const R = true;
-const STAGES = {
- f1: [
-  {id:"f1-pauta", n:"1", title:"Pauta: qual feature vira vídeo",
-   how:["A IA lê o código do servidor e monta um catálogo com uma ficha por feature (números, NPCs, locais).","Uma fila de pautas define a ordem: features exclusivas primeiro, depois updates e guias."],
-   qs:[
-    {id:"p-top",q:"Quais features você acha mais fortes pra começar?",type:"text",help:"Liste de 3 a 10, mesmo que por alto. A gente cruza com o que achar no código."},
-    {id:"f1-freq",q:"Quantos vídeos desse formato por semana?",type:"single",opts:[{l:"7 (1 por dia)"},{l:"3 a 4",r:R},{l:"1 a 2"}]}
-   ]},
-  {id:"f1-roteiro", n:"2", title:"Roteiro",
-   how:["A IA escreve a partir da ficha da feature, seguindo a estrutura da referência: gancho, camadas, ressalva, CTA e pergunta.","Cada frase já sai ligada a uma cena gravável. Também saem a legenda do post e as hashtags."],
-   qs:[
-    {id:"r-dur",q:"Duração dos vídeos",type:"single",help:"A referência tem 2 min, mas vídeos mais curtos costumam segurar mais gente até o fim.",opts:[{l:"30 a 45s"},{l:"45 a 75s",r:R},{l:"Cerca de 2 min, igual à referência"}]},
-    {id:"r-tom",q:"Tom da narração",type:"single",opts:[{l:"Informativo e empolgado (igual à referência)",r:R},{l:"Casual, com gíria de gamer"},{l:"Épico / dramático"},{l:"Engraçado / meme"}]},
-    {id:"r-termos",q:"Termos do jogo ficam em inglês ou traduzidos?",type:"single",help:"Ex.: badge, forge, bestiary, blessing, hunt.",opts:[{l:"Em inglês, como os jogadores falam",r:R},{l:"Traduzidos"}]},
-    {id:"r-cta",q:"Qual a chamada no fim do vídeo?",type:"multi",opts:[{l:"Pergunta pros comentários",r:R},{l:"Link na bio / site",r:R},{l:"Entrar no Discord"},{l:"Código ou bônus pra quem vier do vídeo"}]}
-   ]},
-  {id:"f1-narracao", n:"3", title:"Narração",
-   how:["Voz de IA do ElevenLabs, que hoje é a melhor em PT-BR. Uma voz fixa vira \"a voz do RedOT\".","Dicionário de pronúncia pra nomes do servidor, NPCs e monstros.","Música de fundo sem direitos autorais, baixinha embaixo da voz."],
-   qs:[
-    {id:"n-voz",q:"Perfil da voz",type:"single",opts:[{l:"Masculina jovem e energética",r:R},{l:"Feminina"},{l:"Narrador grave / épico"},{l:"Quero ouvir amostras antes"}]}
-   ]},
-  {id:"f1-gravacao", n:"4", title:"Gravação do gameplay",
-   how:["Um personagem \"Câmera\" controlado por script grava as cenas. O servidor monta cada cena (teleporta, dá itens, coloca monstros) e o script anda, fala com NPCs e abre janelas em sequência fixa.","No começo, uma pessoa grava alguns clipes por feature pra destravar os primeiros vídeos. Os scripts vão substituindo esses clipes aos poucos."],
-   extra:`<div class="panel" style="padding:0;border:0;gap:10px">
-      <div class="verdict-top"><div class="stamp">DÁ PRA FAZER</div><h3>Como temos acesso ao código do servidor, a gravação pode ser 100% automática, sem precisar de uma IA "jogando" olhando a tela.</h3></div>
-      <div class="tbl-wrap"><table>
-        <thead><tr><th style="width:30%">Opção</th><th>Como funciona</th><th>Resultado</th></tr></thead>
-        <tbody>
-          <tr class="rec"><td><b>Personagem scriptado + servidor</b><span class="pill p-ok">Recomendado</span></td><td>Comando de GM monta a cena. O script executa os passos com tempo fixo enquanto a tela é gravada.</td><td><span class="pill p-ok">Liso, 60fps, repetível</span></td></tr>
-          <tr><td><b>Clipes gravados por uma pessoa</b><span class="pill p-warn">Pra começar</span></td><td>Alguém grava as cenas seguindo uma lista pronta. Os clipes ficam etiquetados e a IA escolhe qual usar.</td><td><span class="pill p-ok">Boa qualidade</span></td></tr>
-          <tr><td><b>IA que usa o computador</b><span class="pill p-bad">Só apoio</span></td><td>Claude ou GPT olhando a tela e clicando. Cada ação leva de 2 a 5 segundos.</td><td><span class="pill p-bad">Travado, sai diferente a cada vez</span></td></tr>
-        </tbody>
-      </table></div>
-      <div class="callout"><b>Detalhe que ajuda:</b> no Tibia a câmera sempre centraliza o personagem, e as janelas de NPC abrem no meio. Um recorte 9:16 fixo no centro já enquadra tudo, igual ao vídeo de referência.</div>
-    </div>`,
-   qs:[
-    {id:"c-cliente",q:"Qual cliente os jogadores usam?",type:"single",help:"A pergunta mais importante do formato 1. Define como o script de câmera vai ser feito.",opts:[{l:"OTClient (Redemption / Mehah)"},{l:"OTClient v8 / OTCv8"},{l:"Cliente oficial (12 / 13+)"},{l:"Cliente próprio / modificado"},{l:"Não sei"}]},
-    {id:"c-gm",q:"Podemos criar um personagem GM e comandos novos no servidor?",type:"single",opts:[{l:"Sim, pode mexer no servidor",r:R},{l:"Sim, mas só num servidor de teste"},{l:"Não"}]},
-    {id:"c-test",q:"Existe um servidor de teste separado do principal?",type:"single",help:"Gravar num servidor de teste dá controle total da cena e não aparece nenhum jogador.",opts:[{l:"Sim"},{l:"Não, mas dá pra criar",r:R},{l:"Não, teria que ser no principal"}]},
-    {id:"c-humano",q:"Alguém pode gravar clipes no começo?",type:"single",help:"Cerca de 1 a 2 horas por feature, seguindo uma lista de cenas que a gente manda.",opts:[{l:"Sim, eu mesmo"},{l:"Sim, alguém da equipe"},{l:"Não, tem que ser 100% automático"}]},
-    {id:"c-players",q:"Podem aparecer outros jogadores com o nome visível?",type:"single",opts:[{l:"Não, gravar em ambiente limpo",r:R},{l:"Pode, mas borrando os nomes"},{l:"Pode, mostra que o servidor está cheio"}]}
-   ]},
-  {id:"f1-edicao", n:"5", title:"Edição",
-   how:["Template fixo gerado por código: gameplay com zoom, logo no topo, legenda sincronizada palavra por palavra com a voz.","Zoom automático quando abre uma janela importante. Saída em 1080×1920, pronta pras três redes."],
-   qs:[
-    {id:"e-leg",q:"Estilo da legenda",type:"single",opts:[{l:"Amarela, caixa alta, 2 a 3 palavras (igual à referência)",r:R},{l:"Nas cores da marca RedOT"},{l:"Palavra por palavra com destaque (karaokê)"}]},
-    {id:"e-marca",q:"O que aparece fixo no vídeo?",type:"multi",opts:[{l:"Logo no topo",r:R},{l:"Selo de evento / data de abertura"},{l:"Tela final com site / Discord",r:R},{l:"Tradução em cima das janelas de NPC em inglês"}]}
-   ]}
- ],
- f2: [
-  {id:"f2-captura", n:"1", title:"Captura da live",
-   how:["Assim que a live termina, o sistema baixa a gravação sozinho. Na Twitch a gravação some depois de 7 a 60 dias, por isso baixamos na hora.","Só usamos lives de streamers que autorizaram."],
-   qs:[
-    {id:"s-quem",q:"Quais streamers vão participar?",type:"text",help:"Nome e link do canal. Se ainda não tiver, conte como pretende fechar as parcerias."},
-    {id:"s-plat",q:"Onde eles fazem live?",type:"multi",opts:[{l:"Twitch"},{l:"YouTube"},{l:"Kick"},{l:"TikTok Live"}]},
-    {id:"s-aut",q:"Os streamers autorizam o uso dos cortes?",type:"single",opts:[{l:"Sim, já está no acordo"},{l:"Ainda vamos combinar"},{l:"Não sei"}]}
-   ]},
-  {id:"f2-momentos", n:"2", title:"Achar os melhores momentos",
-   how:["A live é transcrita com os termos do servidor, pra acertar nomes.","A IA cruza quatro sinais pra marcar os trechos: fala sobre o servidor, pico de volume (reação), pico de mensagens no chat e eventos do jogo (boss, drop, morte)."],
-   qs:[
-    {id:"s-crit",q:"Que tipo de momento vira corte?",type:"multi",opts:[{l:"Streamer explicando uma feature do servidor",r:R},{l:"Reações fortes (drop raro, morte, susto)",r:R},{l:"Streamer falando bem do servidor / divulgando",r:R},{l:"Momentos engraçados, mesmo sem feature"}]},
-    {id:"s-qtd",q:"Quantos cortes por live?",type:"single",opts:[{l:"1 a 2 (só os melhores)"},{l:"3 a 5",r:R},{l:"Todos que a IA achar bons"}]}
-   ]},
-  {id:"f2-montagem", n:"3", title:"Montagem do corte",
-   how:["Pra cada streamer, marcamos uma vez onde fica a câmera e onde fica a tela do jogo no layout da live. Depois o recorte é automático.","Silêncios cortados, legenda sincronizada, selo do RedOT e tela final."],
-   qs:[
-    {id:"s-layout",q:"Layout do corte",type:"single",opts:[{l:"Facecam em cima + jogo embaixo (igual à referência)",r:R},{l:"Só o jogo, com a voz do streamer"},{l:"Depende do streamer (alguns não usam câmera)"}]},
-    {id:"s-leg",q:"Estilo da legenda",type:"single",opts:[{l:"Branca, minúscula, frase inteira (igual à referência)",r:R},{l:"Mesmo estilo do formato 1 (amarela)"},{l:"Nas cores da marca RedOT"}]},
-    {id:"s-elem",q:"O que entra no corte?",type:"multi",opts:[{l:"Selo fixo do RedOT / data de abertura",r:R},{l:"Banner grande quando o streamer divulga",r:R},{l:"Memes de reação"},{l:"Tela final com o canal do streamer"}]}
-   ]},
-  {id:"f2-post", n:"4", title:"Aprovação e em qual conta sai",
-   how:["O corte vai pro mesmo canal de aprovação do formato 1 (ver aba Comum)."],
-   qs:[
-    {id:"s-conta",q:"Em qual conta o corte é postado?",type:"single",opts:[{l:"Na do servidor e na do streamer (collab)",r:R},{l:"Só na conta do servidor"},{l:"Só na conta do streamer"}]},
-    {id:"s-aprov",q:"O streamer precisa aprovar o corte antes?",type:"single",opts:[{l:"Não, só a gente aprova",r:R},{l:"Sim, o streamer também aprova"}]}
-   ]}
- ],
- g: [
-  {id:"g-marca", n:"1", title:"Servidor e marca",
-   how:["Essas informações entram em todos os roteiros, legendas e selos."],
-   qs:[
-    {id:"g-nome",q:"Conte sobre o servidor",type:"text",help:"Nome oficial, versão (global, 8.6, custom), público principal e a maior diferença pro Tibia oficial numa frase."},
-    {id:"p-proib",q:"Tem algo que NÃO pode aparecer ou ser dito?",type:"text",help:"Ex.: não citar outros servidores, não prometer drop, não mostrar a loja, não falar de preço."}
-   ]},
-  {id:"g-redes", n:"2", title:"Redes e postagem",
-   how:["A postagem é automática nas redes escolhidas, com legenda, hashtags e horário definidos pelo sistema.","Instagram precisa ser conta Business ou Criador de conteúdo."],
-   qs:[
-    {id:"g-plat",q:"Em quais redes vamos postar?",type:"multi",opts:[{l:"TikTok",r:R},{l:"Instagram Reels",r:R},{l:"YouTube Shorts",r:R},{l:"Kwai"}]},
-    {id:"u-contas",q:"O servidor já tem contas nessas redes?",type:"text",help:"Quais @ e quantos seguidores em cada uma."},
-    {id:"g-lang",q:"Em quais idiomas?",type:"multi",opts:[{l:"Português BR",r:R},{l:"Espanhol"},{l:"Inglês"},{l:"Polonês"}]}
-   ]},
-  {id:"g-aprov", n:"3", title:"Aprovação e orçamento",
-   how:["O vídeo pronto chega com botões de Aprovar, Refazer com comentário e Descartar."],
-   qs:[
-    {id:"v-onde",q:"Como você quer aprovar os vídeos?",type:"single",opts:[{l:"Recebo no Discord e aprovo",r:R},{l:"Recebo no Telegram e aprovo"},{l:"Recebo no WhatsApp e aprovo"},{l:"Posta sozinho, sem aprovação"}]},
-    {id:"g-orc",q:"Orçamento mensal pra ferramentas de IA (voz, roteiro, postagem)",type:"single",help:"Referência: 1 vídeo por dia do formato 1 fica entre US$ 30 e 60 por mês.",opts:[{l:"Até US$ 30"},{l:"US$ 30 a 100",r:R},{l:"US$ 100 a 300"},{l:"Sem limite definido"}]}
-   ]},
-  {id:"g-mat", n:"4", title:"Material pra começar",
-   how:["O código do servidor é o principal. Com ele a gente monta o catálogo de features e confirma como vai ser a gravação."],
-   qs:[
-    {id:"m-lista",q:"O que você já tem pronto pra mandar?",type:"multi",opts:[{l:"Código do servidor (Git)"},{l:"Logo em PNG transparente"},{l:"Cores e fontes da marca"},{l:"Acesso a personagem GM / servidor de teste"},{l:"Site, Discord e links oficiais"},{l:"Data de abertura ou próximos eventos"},{l:"Outros vídeos de referência que você curte"}]},
-    {id:"m-extra",q:"Mais alguma coisa que a gente deveria saber?",type:"text",help:"Prazos, data de abertura, concorrentes, quem mais participa do projeto."}
-   ]}
- ]
-};
-const TAB_LABEL = {f1:"Formato 1 · Feature com voz IA", f2:"Formato 2 · Cortes de streamer", g:"Comum aos dois"};
+const DADOS = {"texto": "Você sabia que, no RedOT, cada boss que você derrota vale muito mais do que o loot? Aqui, todo boss abatido soma pontos no seu ranking. Quanto mais alto o seu rank, maior o bônus de experiência nas suas hunts, chegando a até dez por cento de XP a mais. E não para por aí: com esses pontos você libera áreas exclusivas, com criaturas mais fortes e recompensas que você não encontra no Tibia oficial. Então, se você ainda ignora os bosses, está deixando progresso para trás. E aí, qual foi o último boss que você derrotou?", "grupos": [{"id": "masculinas", "titulo": "Vozes masculinas", "descricao": "Vozes prontas do Google (Chirp 3 HD). Leem exatamente o texto e mantêm o mesmo timbre em todos os vídeos.", "itens": [{"chave": "chirp-Algieba", "rotulo": "Voz 01", "nome": "Algieba", "genero": "Masculina", "tags": ["grave", "suave"], "dur": 35.5}, {"chave": "chirp-Algenib", "rotulo": "Voz 02", "nome": "Algenib", "genero": "Masculina", "tags": ["grave", "levemente rouca"], "dur": 35.1}, {"chave": "chirp-Charon", "rotulo": "Voz 03", "nome": "Charon", "genero": "Masculina", "tags": ["média", "informativa"], "dur": 34.7}, {"chave": "chirp-Sadaltager", "rotulo": "Voz 04", "nome": "Sadaltager", "genero": "Masculina", "tags": ["média", "tom de quem conhece"], "dur": 34.5}, {"chave": "chirp-Alnilam", "rotulo": "Voz 05", "nome": "Alnilam", "genero": "Masculina", "tags": ["média", "firme", "mais rápida"], "dur": 32.9}, {"chave": "chirp-Fenrir", "rotulo": "Voz 06", "nome": "Fenrir", "genero": "Masculina", "tags": ["média", "animada"], "dur": 33.8}]}, {"id": "femininas", "titulo": "Vozes femininas", "descricao": "Mesma família de vozes prontas (Chirp 3 HD).", "itens": [{"chave": "chirp-Pulcherrima", "rotulo": "Voz 07", "nome": "Pulcherrima", "genero": "Feminina", "tags": ["grave", "direta"], "dur": 34.3}, {"chave": "chirp-Gacrux", "rotulo": "Voz 08", "nome": "Gacrux", "genero": "Feminina", "tags": ["média", "madura"], "dur": 35.2}, {"chave": "chirp-Kore", "rotulo": "Voz 09", "nome": "Kore", "genero": "Feminina", "tags": ["média", "firme"], "dur": 33.7}]}, {"id": "dirigidas", "titulo": "Com direção de locutor", "selo": "Gemini", "descricao": "A voz recebe uma descrição do narrador (adulto, jogador antigo de Tibia, confiante, sotaque neutro de TV) e interpreta o texto. Soa mais expressiva, mas pode variar um pouco de um vídeo para outro; o sistema confere cada gravação.", "itens": [{"chave": "gemini-Charon", "rotulo": "Voz 10", "nome": "Charon + direção", "genero": "Masculina", "tags": ["narrador de games", "expressiva"], "dur": 38.3}, {"chave": "gemini-Algenib", "rotulo": "Voz 11", "nome": "Algenib + direção", "genero": "Masculina", "tags": ["grave", "narrador de games"], "dur": 36.1}, {"chave": "gemini-Gacrux", "rotulo": "Voz 12", "nome": "Gacrux + direção", "genero": "Feminina", "tags": ["narradora de games", "madura"], "dur": 41.7}]}], "pronuncia": [{"chave": "pron-a", "rotulo": "Réd-Ót", "explica": "O nome falado como uma palavra de duas sílabas"}, {"chave": "pron-b", "rotulo": "Réd-Ó-Tê", "explica": "Com as letras O e T faladas separadas"}, {"chave": "pron-c", "rotulo": "Redóte", "explica": "Tudo junto, numa palavra só"}]};
+const $ = s => document.querySelector(s);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const ICON = '<svg class="i-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg><svg class="i-pause" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 5h4v14H6zM14 5h4v14h-4z"/></svg>';
+const K = "redot-voz-escolha-v1";
+let est = {fav:null, seg:null, pron:null, nome:"", obs:""};
+try { Object.assign(est, JSON.parse(localStorage.getItem(K) || "{}")); } catch(e) {}
+const salvar = () => { try { localStorage.setItem(K, JSON.stringify(est)); } catch(e) {} };
+const ROT = {}; // chave -> rótulo
 
-const $ = (s,el=document)=>el.querySelector(s);
-const $$ = (s,el=document)=>[...el.querySelectorAll(s)];
-const esc = s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
-const QMAP = {};
-const answers = {};
-const LS = "redot-reels-answers-v2";
-function lsGet(k){ try{ return localStorage.getItem(k); }catch(e){ return null; } }
-function lsSet(k,v){ try{ localStorage.setItem(k,v); }catch(e){} }
-try{ Object.assign(answers, JSON.parse(lsGet(LS)||"{}")); }catch(e){}
+$("#texto").innerHTML = esc(DADOS.texto) + '<span class="nota">Duração de cada amostra: cerca de 30 segundos.</span>';
 
-function render(){
-  for(const tab in STAGES){
-    const host = $(`[data-stages="${tab}"]`); let html = "";
-    const pre = tab==="g" ? "C" : tab.toUpperCase();
-    STAGES[tab].forEach(st=>{
-      html += `<div class="stage" id="st-${st.id}"><div class="stage-top${st.qs.length?" has-q":""}"><div class="stage-title"><span class="k">${st.n}</span><h3>${esc(st.title)}</h3></div><ul>${st.how.map(h=>`<li>${esc(h)}</li>`).join("")}</ul></div>`;
-      if(st.extra) html += `<div class="stage-extra">${st.extra}</div>`;
-      st.qs.forEach((q,i)=>{
-        const code = `${pre}.${st.n}.${i+1}`;
-        QMAP[q.id] = {...q, tab, stage:st.title, code};
-        html += `<div class="q" id="q-${q.id}" data-q="${q.id}"><div class="q-head"><span class="q-id">${code}</span><h4>${esc(q.q)}</h4><span class="q-done">✓ salvo</span></div>`;
-        if(q.help) html += `<p class="q-help">${esc(q.help)}</p>`;
-        if(q.type==="text"){
-          html += `<textarea class="txt" id="t-${q.id}" data-kind="text" aria-label="${esc(q.q)}" placeholder="Escreva aqui…"></textarea>`;
-        } else {
-          html += `<div class="opts" role="group" aria-label="${esc(q.q)}">`;
-          q.opts.forEach((o,j)=>{
-            html += `<button type="button" class="opt" id="o-${q.id}-${j}" data-v="${esc(o.l)}" ${q.type==="multi"?"data-multi":""} aria-pressed="false"><span class="mk"></span><span>${esc(o.l)}</span>${o.r?'<span class="rec">rec</span>':""}</button>`;
-          });
-          html += `</div><input class="note" id="n-${q.id}" data-kind="note" type="text" placeholder="Observação (opcional)" aria-label="Observação">`;
-        }
-        html += `</div>`;
-      });
-      html += `</div>`;
-    });
-    host.innerHTML = html;
+function fmt(s){ s = Math.max(0, Math.round(s)); return Math.floor(s/60) + ":" + String(s%60).padStart(2,"0"); }
+
+let html = "";
+DADOS.grupos.forEach(g => {
+  html += `<section><div class="sec-head"><h2>${esc(g.titulo)}${g.selo ? ` <small>${esc(g.selo)}</small>` : ""}</h2><p>${esc(g.descricao)}</p></div><div class="grid">`;
+  g.itens.forEach(it => {
+    ROT[it.chave] = it.rotulo;
+    html += `<article class="card" data-k="${esc(it.chave)}">
+      <span class="selo s-fav">Favorita</span><span class="selo s-seg">2ª opção</span>
+      <div class="top"><button class="play" type="button" aria-label="Ouvir ${esc(it.rotulo)}">${ICON}</button>
+        <div class="nome"><b>${esc(it.rotulo)}</b><span>${esc(it.genero)} · ${esc(it.nome)}</span></div></div>
+      <div class="tags">${it.tags.map((t,i) => `<span class="tag${i===0?" g":""}">${esc(t)}</span>`).join("")}</div>
+      <div class="barra"><i></i></div><div class="tempo"><span class="t0">0:00</span><span>${fmt(it.dur)}</span></div>
+      <div class="acoes"><button class="btn b-fav" type="button" aria-pressed="false">★ Favorita</button><button class="btn b-seg" type="button" aria-pressed="false">2ª opção</button></div>
+      <audio preload="none" src="audios/${esc(it.chave)}.mp3"></audio>
+    </article>`;
+  });
+  html += `</div></section>`;
+});
+$("#grupos").innerHTML = html;
+
+$("#pron").innerHTML = DADOS.pronuncia.map(p => {
+  ROT[p.chave] = p.rotulo;
+  return `<div class="opt" role="radio" tabindex="0" aria-checked="false" data-k="${esc(p.chave)}">
+    <button class="play" type="button" aria-label="Ouvir ${esc(p.rotulo)}">${ICON}</button>
+    <div class="t"><b>${esc(p.rotulo)}</b><span>${esc(p.explica)}</span></div><span class="mk"></span>
+    <audio preload="none" src="audios/${esc(p.chave)}.mp3"></audio></div>`;
+}).join("");
+
+/* player: só um toca por vez */
+let atual = null;
+function parar(){ if(!atual) return; atual.audio.pause(); atual.el.classList.remove("tocando"); atual = null; }
+document.addEventListener("click", e => {
+  const b = e.target.closest(".play"); if(!b) return;
+  e.stopPropagation();
+  const el = b.closest("[data-k]"); const a = el.querySelector("audio");
+  if (atual && atual.el === el) { parar(); return; }
+  parar(); atual = {el, audio:a}; el.classList.add("tocando");
+  a.play().catch(() => parar());
+}, true);
+document.querySelectorAll("audio").forEach(a => {
+  const el = a.closest("[data-k]"); const bar = el.querySelector(".barra i"); const t0 = el.querySelector(".t0");
+  a.addEventListener("timeupdate", () => { if(bar && a.duration) bar.style.width = (a.currentTime/a.duration*100)+"%"; if(t0) t0.textContent = fmt(a.currentTime); });
+  a.addEventListener("ended", () => { if(atual && atual.audio === a) parar(); if(bar) bar.style.width = "0"; });
+});
+document.querySelectorAll(".barra").forEach(b => b.addEventListener("click", e => {
+  const a = b.closest("[data-k]").querySelector("audio"); if(!a.duration) return;
+  const r = b.getBoundingClientRect(); a.currentTime = (e.clientX - r.left) / r.width * a.duration;
+}));
+
+/* escolhas */
+function pintar(){
+  document.querySelectorAll(".card").forEach(c => {
+    const k = c.dataset.k;
+    c.classList.toggle("fav", est.fav === k); c.classList.toggle("seg", est.seg === k);
+    c.querySelector(".b-fav").setAttribute("aria-pressed", est.fav === k);
+    c.querySelector(".b-seg").setAttribute("aria-pressed", est.seg === k);
+  });
+  document.querySelectorAll(".opt").forEach(o => o.setAttribute("aria-checked", est.pron === o.dataset.k));
+  const partes = [];
+  if (est.fav) partes.push(`Favorita: <b>${esc(ROT[est.fav]||est.fav)}</b>`);
+  if (est.seg) partes.push(`2ª: <b>${esc(ROT[est.seg]||est.seg)}</b>`);
+  if (est.pron) partes.push(`Nome: <b>${esc(ROT[est.pron]||est.pron)}</b>`);
+  $("#resumo").innerHTML = partes.length ? partes.join(" · ") : "Nenhuma voz marcada ainda.";
+  const pronto = !!est.fav;
+  const env = $("#enviar"); env.setAttribute("aria-disabled", String(!pronto));
+  env.href = pronto ? "https://api.whatsapp.com/send?text=" + encodeURIComponent(textoEnvio()) : "#";
+}
+function textoEnvio(){
+  const l = ["*Voz do RedOT — escolha*"];
+  if (est.nome) l.push("Quem escolheu: " + est.nome);
+  l.push("Favorita: " + (est.fav ? `${ROT[est.fav]} (${est.fav})` : "—"));
+  l.push("2ª opção: " + (est.seg ? `${ROT[est.seg]} (${est.seg})` : "—"));
+  l.push("Pronúncia do nome: " + (est.pron ? `${ROT[est.pron]} (${est.pron})` : "—"));
+  if (est.obs) l.push("Comentário: " + est.obs);
+  return l.join("\n");
+}
+document.addEventListener("click", e => {
+  const f = e.target.closest(".b-fav"), s = e.target.closest(".b-seg");
+  if (f || s) {
+    const k = e.target.closest(".card").dataset.k;
+    if (f) { est.fav = est.fav === k ? null : k; if (est.seg === k) est.seg = null; }
+    if (s) { est.seg = est.seg === k ? null : k; if (est.fav === k) est.fav = null; }
+    salvar(); pintar(); return;
   }
-}
-
-function isAnswered(id){ const a=answers[id]; if(!a) return false; const v=a.value; return Array.isArray(v)?v.length>0:!!(v&&String(v).trim()); }
-function paint(id){
-  const q = QMAP[id]; const el = $("#q-"+id); if(!q||!el) return;
-  const a = answers[id]||{};
-  if(q.type==="text"){
-    const t = $("#t-"+id); if(document.activeElement!==t) t.value = a.value||"";
-  } else {
-    const vals = Array.isArray(a.value)?a.value:(a.value?[a.value]:[]);
-    $$(".opt",el).forEach(b=>b.setAttribute("aria-pressed", vals.includes(b.dataset.v)?"true":"false"));
-    const n = $("#n-"+id); if(document.activeElement!==n) n.value = a.note||"";
-  }
-  el.classList.toggle("answered", isAnswered(id));
-}
-function progress(){
-  const ids = Object.keys(QMAP); const n = ids.filter(isAnswered).length;
-  $("#progFill").style.width = (n/ids.length*100)+"%";
-  $("#progTxt").textContent = `${n}/${ids.length} respondidas`;
-  for(const tab of ["f1","f2","g"]){
-    const t = ids.filter(i=>QMAP[i].tab===tab);
-    $(`[data-count="${tab}"]`).textContent = `${t.filter(isAnswered).length}/${t.length}`;
-  }
-}
-
-/* tabs */
-function showTab(tab, scroll){
-  $$(".tab").forEach(b=>b.setAttribute("aria-selected", b.dataset.tab===tab?"true":"false"));
-  $$(".fmt-card").forEach(b=>b.setAttribute("aria-pressed", b.dataset.tab===tab?"true":"false"));
-  $$("[data-panel]").forEach(p=>p.hidden = p.dataset.panel!==tab);
-  lsSet("redot-reels-tab", tab);
-  if(scroll){ const top = $(`#panel-${tab}`).getBoundingClientRect().top + window.scrollY - 120; window.scrollTo({top, behavior:"smooth"}); }
-}
-document.addEventListener("click", e=>{
-  const t = e.target.closest("[data-tab],[data-goto]");
-  if(t){ e.preventDefault(); showTab(t.dataset.tab||t.dataset.goto, !t.classList.contains("tab")); return; }
+  const o = e.target.closest(".opt");
+  if (o) { est.pron = o.dataset.k; salvar(); pintar(); }
 });
-$(".tabs").addEventListener("keydown", e=>{
-  if(e.key!=="ArrowRight" && e.key!=="ArrowLeft") return;
-  const tabs = $$(".tab"); const i = tabs.indexOf(document.activeElement); if(i<0) return;
-  const nx = tabs[(i + (e.key==="ArrowRight"?1:-1) + tabs.length) % tabs.length]; nx.focus(); showTab(nx.dataset.tab);
+$("#pron").addEventListener("keydown", e => {
+  const o = e.target.closest(".opt"); if(!o) return;
+  if (e.key === " " || e.key === "Enter") { e.preventDefault(); est.pron = o.dataset.k; salvar(); pintar(); }
 });
-
-/* persistence: shared db inside Claude artifacts, browser storage elsewhere */
-let db = null; const timers = {}; const chains = {}; const dirty = new Set();
-function setSave(s,t){ const el=$("#save"); el.dataset.s=s; $("#saveTxt").textContent=t; }
-function persistLocal(){ lsSet(LS, JSON.stringify(answers)); }
-function queueSave(id){
-  persistLocal();
-  if(!db) return;
-  dirty.add(id); clearTimeout(timers[id]);
-  timers[id] = setTimeout(()=>{
-    setSave("busy","salvando…");
-    const body = {value: answers[id]?.value ?? "", note: answers[id]?.note ?? "", question: QMAP[id].q, code: QMAP[id].code, tab: QMAP[id].tab, updatedAt: new Date().toISOString()};
-    chains[id] = (chains[id]||Promise.resolve()).then(()=>db.doc("answers/"+id).set(body)).then(()=>{
-      dirty.delete(id); setSave("ok","salvo");
-    }).catch(e=>{
-      dirty.delete(id);
-      if(e && e.code==="unavailable"){ setTimeout(()=>queueSave(id), 800+Math.random()*800); return; }
-      setSave("err","não sincronizou, use Copiar respostas");
-    });
-  }, 650);
-}
-document.addEventListener("click", e=>{
-  const b = e.target.closest(".opt"); if(!b) return;
-  const id = b.closest(".q").dataset.q; const q = QMAP[id];
-  const a = answers[id] = answers[id]||{value: q.type==="multi"?[]:"", note:""};
-  if(q.type==="multi"){
-    const arr = Array.isArray(a.value)?[...a.value]:[];
-    const i = arr.indexOf(b.dataset.v); i>=0?arr.splice(i,1):arr.push(b.dataset.v); a.value = arr;
-  } else {
-    a.value = a.value===b.dataset.v ? "" : b.dataset.v;
-  }
-  paint(id); progress(); queueSave(id);
+$("#nome").value = est.nome; $("#obs").value = est.obs;
+$("#nome").addEventListener("input", e => { est.nome = e.target.value; salvar(); pintar(); });
+$("#obs").addEventListener("input", e => { est.obs = e.target.value; salvar(); pintar(); });
+$("#copiar").addEventListener("click", async () => {
+  const t = textoEnvio();
+  try { await navigator.clipboard.writeText(t); $("#copiar").textContent = "Copiado ✓"; }
+  catch(e) { prompt("Copie o texto:", t); }
+  setTimeout(() => $("#copiar").textContent = "Copiar", 1800);
 });
-document.addEventListener("input", e=>{
-  const t = e.target;
-  if(t.id==="respName"){ lsSet("redot-reels-name", t.value); return; }
-  if(!t.dataset.kind) return;
-  const id = t.closest(".q").dataset.q; const q = QMAP[id];
-  const a = answers[id] = answers[id]||{value: q.type==="multi"?[]:"", note:""};
-  if(t.dataset.kind==="text") a.value = t.value; else a.note = t.value;
-  $("#q-"+id).classList.toggle("answered", isAnswered(id)); progress(); queueSave(id);
-});
-
-/* export */
-function asText(){
-  const name = $("#respName").value.trim();
-  let out = `RESPOSTAS · Briefing RedOT Reels\n${name?`Respondido por: ${name}\n`:""}Data: ${new Date().toLocaleString("pt-BR")}\n`;
-  let curTab = "", curStage = "";
-  for(const id in QMAP){
-    const q = QMAP[id]; const a = answers[id]||{};
-    if(q.tab!==curTab){ curTab=q.tab; out += `\n==== ${TAB_LABEL[q.tab]} ====\n`; curStage=""; }
-    if(q.stage!==curStage){ curStage=q.stage; out += `\n## ${curStage}\n`; }
-    const v = Array.isArray(a.value)?a.value.join(", "):(a.value||"");
-    out += `${q.code} ${q.q}\n→ ${v||"(sem resposta)"}${a.note?`\n   obs: ${a.note}`:""}\n`;
-  }
-  return out;
-}
-$("#copyBtn").addEventListener("click", ()=>{
-  const txt = asText(); const ta = $("#copyOut"); ta.value = txt; ta.hidden = false;
-  const done = ()=>{ $("#copyBtn").textContent = "Copiado ✓"; setTimeout(()=>$("#copyBtn").textContent="Copiar respostas",1800); };
-  const fallback = ()=>{ ta.focus(); ta.select(); };
-  try{ navigator.clipboard.writeText(txt).then(done, fallback); }catch(e){ fallback(); }
-});
-$("#dlBtn").addEventListener("click", ()=>{
-  const blob = new Blob([asText()], {type:"text/plain;charset=utf-8"});
-  const a = document.createElement("a"); a.href = URL.createObjectURL(blob);
-  a.download = "respostas-redot-reels.txt"; document.body.appendChild(a); a.click();
-  setTimeout(()=>{ URL.revokeObjectURL(a.href); a.remove(); }, 500);
-});
-
-render();
-Object.keys(QMAP).forEach(paint); progress();
-$("#respName").value = lsGet("redot-reels-name")||"";
-const startTab = ["f1","f2","g"].includes(location.hash.slice(1)) ? location.hash.slice(1) : (lsGet("redot-reels-tab")||"f1");
-showTab(["f1","f2","g"].includes(startTab)?startTab:"f1", false);
-
-if(window.claude && window.claude.use){
-  $("#dlBtn").hidden = true;
-  (async()=>{
-    try{ db = await window.claude.use("db"); }catch(e){ db = null; }
-    if(!db) return;
-    setSave("ok","sincronizado");
-    db.collection("answers").onSnapshot(snap=>{
-      snap.docs.forEach(d=>{
-        if(!QMAP[d.id] || dirty.has(d.id)) return;
-        const data = d.data()||{};
-        answers[d.id] = {value: data.value ?? "", note: data.note ?? ""};
-        paint(d.id);
-      });
-      persistLocal(); progress();
-    }, ()=>setSave("err","sem conexão, use Copiar respostas"));
-    try{
-      const snap = await db.collection("answers").get();
-      const have = new Set(snap.docs.map(d=>d.id));
-      Object.keys(answers).forEach(id=>{ if(QMAP[id] && !have.has(id) && isAnswered(id)) queueSave(id); });
-    }catch(e){}
-  })();
-}
+pintar();
 </script>
-
+</body>
 </html>
